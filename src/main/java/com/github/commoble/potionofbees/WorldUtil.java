@@ -33,7 +33,7 @@ public class WorldUtil
 		for (int i=0; i<bees; i++)
 		{
 			BlockPos spawnPos = new BlockPos(vec.x, vec.y, vec.z);
-			Entity ent = EntityType.field_226289_e_.spawn(world, null, null, spawnPos, SpawnReason.EVENT, false, false);
+			Entity ent = EntityType.BEE.spawn(world, null, null, spawnPos, SpawnReason.EVENT, false, false);
 			if (ent instanceof BeeEntity)
 			{
 				BeeEntity bee = (BeeEntity)ent;
@@ -51,6 +51,6 @@ public class WorldUtil
 	
 	public static boolean isValidBeeTarget(LivingEntity ent)
 	{
-		return (ent.getType() != EntityType.field_226289_e_) && (!ent.isInvulnerable());
+		return (ent.getType() != EntityType.BEE) && (!ent.isInvulnerable());
 	}
 }

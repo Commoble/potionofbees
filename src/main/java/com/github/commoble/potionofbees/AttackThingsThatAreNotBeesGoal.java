@@ -9,7 +9,7 @@ public class AttackThingsThatAreNotBeesGoal extends NearestAttackableTargetGoal<
 {
 	public static boolean isThingNotBee(LivingEntity ent)
 	{
-		return (ent.getType() != EntityType.field_226289_e_);
+		return (ent.getType() != EntityType.BEE);
 	}
 	
 	AttackThingsThatAreNotBeesGoal(BeeEntity p_i225719_1_)
@@ -33,9 +33,9 @@ public class AttackThingsThatAreNotBeesGoal extends NearestAttackableTargetGoal<
 			this.targetClass,
 			this.targetEntitySelector,
 			this.goalOwner,
-			this.goalOwner.func_226277_ct_(),
-			this.goalOwner.func_226280_cw_(),
-			this.goalOwner.func_226281_cx_(),
+			this.goalOwner.getPosX(),
+			this.goalOwner.getPosY(),
+			this.goalOwner.getPosZ(),
 			this.getTargetableArea(this.getTargetDistance()));
 	}
 
