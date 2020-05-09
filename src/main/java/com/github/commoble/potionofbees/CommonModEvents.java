@@ -1,5 +1,6 @@
 package com.github.commoble.potionofbees;
 
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
@@ -16,24 +17,24 @@ public class CommonModEvents
 		reg.register(ResourceLocations.POTION_OF_BEES, new PotionOfBeesItem(new Item.Properties().group(ItemGroup.BREWING)));
 		reg.register(ResourceLocations.SPLASH_POTION_OF_BEES, new SplashPotionOfBeesItem(new Item.Properties().group(ItemGroup.BREWING)));
 	}
-	
+
 	public static void onRegisterEffects(Registrator<Effect> reg)
 	{
 		reg.register(ResourceLocations.EVANESCENCE, new EvanescenceEffect(EffectType.HARMFUL, 0));
 	}
-	
+
 	public static void onRegisterEntityTypes(Registrator<EntityType<?>> reg)
 	{
-		reg.register(
-			ResourceLocations.SPLASH_POTION_OF_BEES,
-			EntityType.Builder.create(SplashPotionOfBeesEntity::new, EntityClassification.MISC)
-			.setCustomClientFactory(SplashPotionOfBeesEntity::spawnOnClient)
-			.build(ResourceLocations.SPLASH_POTION_OF_BEES.toString()));
+		reg.register(ResourceLocations.SPLASH_POTION_OF_BEES, EntityType.Builder.create(SplashPotionOfBeesEntity::new, EntityClassification.MISC)
+			.setCustomClientFactory(SplashPotionOfBeesEntity::spawnOnClient).build(ResourceLocations.SPLASH_POTION_OF_BEES.toString()));
 	}
-	
+
 	public static void onCommonSetup(FMLCommonSetupEvent event)
 	{
 		BrewingRecipeRegistry.addRecipe(new PotionOfBeesRecipe());
 		BrewingRecipeRegistry.addRecipe(new SplashPotionOfBeesRecipe());
+
+		// add dispenser behavior for throwing splash potions of bees
+		DispenserBlock.registerDispenseBehavior(RegistryObjects.SPLASH_POTION_OF_BEES_ITEM, SplashPotionOfBeesDispenserBehavior::dispenseSplashPotionOfBees);
 	}
 }

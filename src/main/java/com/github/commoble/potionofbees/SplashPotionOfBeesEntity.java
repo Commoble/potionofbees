@@ -30,6 +30,16 @@ public class SplashPotionOfBeesEntity extends ProjectileItemEntity
 		return new SplashPotionOfBeesEntity(worldIn, throwerIn);
 	}
 	
+	private SplashPotionOfBeesEntity(World worldIn, double x, double y, double z)
+	{
+		super(RegistryObjects.getSplashPotionOfBeesEntityType(), x, y, z, worldIn);
+	}
+	
+	public static SplashPotionOfBeesEntity asDispensedEntity(World worldIn, double x, double y, double z)
+	{
+		return new SplashPotionOfBeesEntity(worldIn, x, y, z);
+	}
+	
 	public static SplashPotionOfBeesEntity spawnOnClient(SpawnEntity spawnPacket, World world)
 	{
 		return new SplashPotionOfBeesEntity(RegistryObjects.getSplashPotionOfBeesEntityType(), world);
