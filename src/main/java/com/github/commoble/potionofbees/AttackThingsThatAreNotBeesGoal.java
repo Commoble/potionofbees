@@ -23,7 +23,7 @@ public class AttackThingsThatAreNotBeesGoal extends NearestAttackableTargetGoal<
 	@Override
 	public boolean shouldExecute()
 	{
-		return this.func_226465_h_() && super.shouldExecute();
+		return this.canSting() && super.shouldExecute();
 	}
 
 	@Override
@@ -45,8 +45,8 @@ public class AttackThingsThatAreNotBeesGoal extends NearestAttackableTargetGoal<
 	@Override
 	public boolean shouldContinueExecuting()
 	{
-		boolean flag = this.func_226465_h_();
-		if (flag && this.goalOwner.getAttackTarget() != null)
+		boolean canSting = this.canSting();
+		if (canSting && this.goalOwner.getAttackTarget() != null)
 		{
 			return super.shouldContinueExecuting();
 		}
@@ -57,9 +57,9 @@ public class AttackThingsThatAreNotBeesGoal extends NearestAttackableTargetGoal<
 		}
 	}
 
-	private boolean func_226465_h_()
+	private boolean canSting()
 	{
 		BeeEntity beeentity = (BeeEntity) this.goalOwner;
-		return beeentity.func_226427_ez_() && !beeentity.func_226412_eE_();
+		return beeentity.isAggressive() && !beeentity.hasStung();
 	}
 }

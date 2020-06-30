@@ -11,12 +11,12 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class WorldUtil
 {
-	public static void spawnAngryBees(World world, Vec3d vec)
+	public static void spawnAngryBees(World world, Vector3d vec)
 	{
 		AxisAlignedBB targetBox = new AxisAlignedBB(vec,vec).grow(PotionOfBeesMod.BEE_SEARCH_RADIUS);
 
@@ -41,7 +41,7 @@ public class WorldUtil
 				bee.addPotionEffect(new EffectInstance(Effects.SPEED, maxTime, 1, false, false));
 				bee.addPotionEffect(new EffectInstance(RegistryObjects.EVANESCENCE_EFFECT, ticksToExist, 0, false, false));
 				foundTarget.ifPresent(target -> { // make bee angry at target
-						bee.func_226391_a_(target);
+						bee.setAttackTarget(target);
 						bee.targetSelector.addGoal(0, new AttackThingsThatAreNotBeesGoal(bee));
 					});
 			}

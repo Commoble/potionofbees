@@ -32,7 +32,8 @@ public class SplashPotionOfBeesItem extends Item
 		{
 			SplashPotionOfBeesEntity potionEntity = SplashPotionOfBeesEntity.asThrownEntity(worldIn, playerIn);
 			potionEntity.setItem(itemstack);
-			potionEntity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, -20.0F, 0.7F, 1.0F);
+			// ProjectileEntity::shoot
+			potionEntity.func_234612_a_(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, -20.0F, 0.7F, 1.0F);
 			worldIn.addEntity(potionEntity);
 		}
 
@@ -42,6 +43,6 @@ public class SplashPotionOfBeesItem extends Item
 			itemstack.shrink(1);
 		}
 
-		return ActionResult.func_226248_a_(itemstack);
+		return ActionResult.resultSuccess(itemstack);
 	}
 }

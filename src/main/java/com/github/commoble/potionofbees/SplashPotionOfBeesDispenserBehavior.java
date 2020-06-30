@@ -3,7 +3,7 @@ package com.github.commoble.potionofbees;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
-import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Util;
 import net.minecraft.world.World;
@@ -19,7 +19,7 @@ public class SplashPotionOfBeesDispenserBehavior extends ProjectileDispenseBehav
 	 * Return the projectile entity spawned by this dispense behavior.
 	 */
 	@Override
-	protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn)
+	protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn)
 	{
 		return Util.make(SplashPotionOfBeesEntity.asDispensedEntity(worldIn, position.getX(), position.getY(), position.getZ()), 
 			entity -> entity.setItem(stackIn));
