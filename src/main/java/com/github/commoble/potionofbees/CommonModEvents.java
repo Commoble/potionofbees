@@ -8,6 +8,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectType;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class CommonModEvents
@@ -35,6 +36,10 @@ public class CommonModEvents
 		BrewingRecipeRegistry.addRecipe(new SplashPotionOfBeesRecipe());
 
 		// add dispenser behavior for throwing splash potions of bees
-		DispenserBlock.registerDispenseBehavior(RegistryObjects.SPLASH_POTION_OF_BEES_ITEM, SplashPotionOfBeesDispenserBehavior::dispenseSplashPotionOfBees);
+		DeferredWorkQueue.runLater(
+			() -> DispenserBlock.registerDispenseBehavior(
+				RegistryObjects.SPLASH_POTION_OF_BEES_ITEM,
+				SplashPotionOfBeesDispenserBehavior::dispenseSplashPotionOfBees));
+		
 	}
 }
