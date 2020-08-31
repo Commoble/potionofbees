@@ -68,7 +68,7 @@ public class SplashPotionOfBeesEntity extends ProjectileItemEntity
 	{
 		if (!this.world.isRemote)
 		{
-			this.world.playEvent(2002, new BlockPos(this), PotionUtils.getPotionColor(Potions.FIRE_RESISTANCE));
+			this.world.playEvent(2002, new BlockPos(this.lastTickPosX, this.lastTickPosY, this.lastTickPosZ), PotionUtils.getPotionColor(Potions.FIRE_RESISTANCE));
 			WorldUtil.spawnAngryBees(this.world, result.getHitVec());
 		}
 
