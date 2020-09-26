@@ -1,4 +1,4 @@
-package com.github.commoble.potionofbees;
+package commoble.potionofbees;
 
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.entity.EntityClassification;

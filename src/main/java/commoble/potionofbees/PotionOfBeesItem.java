@@ -1,4 +1,4 @@
-package com.github.commoble.potionofbees;
+package commoble.potionofbees;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.LivingEntity;

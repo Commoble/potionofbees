@@ -1,4 +1,4 @@
-package com.github.commoble.potionofbees;
+package commoble.potionofbees;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
