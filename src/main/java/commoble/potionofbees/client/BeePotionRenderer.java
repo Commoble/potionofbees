@@ -1,4 +1,4 @@
-package com.github.commoble.potionofbees.client;
+package commoble.potionofbees.client;
 
 public class BeePotionRenderer
 {

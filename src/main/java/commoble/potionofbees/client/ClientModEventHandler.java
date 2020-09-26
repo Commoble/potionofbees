@@ -1,9 +1,8 @@
-package com.github.commoble.potionofbees.client;
+package commoble.potionofbees.client;
 
-import com.github.commoble.potionofbees.PotionOfBeesMod;
-import com.github.commoble.potionofbees.RegistryObjects;
-import com.github.commoble.potionofbees.SplashPotionOfBeesEntity;
-
+import commoble.potionofbees.PotionOfBeesMod;
+import commoble.potionofbees.RegistryObjects;
+import commoble.potionofbees.SplashPotionOfBeesEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.SpriteRenderer;
