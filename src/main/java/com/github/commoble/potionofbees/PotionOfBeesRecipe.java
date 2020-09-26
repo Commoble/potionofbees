@@ -19,8 +19,7 @@ public class PotionOfBeesRecipe implements IBrewingRecipe
 	@Override
 	public boolean isIngredient(ItemStack ingredient)
 	{
-		// .contains
-		return ItemTags.getCollection().get(ResourceLocations.POTION_OF_BEES_INGREDIENTS).func_230235_a_(ingredient.getItem());
+		return ItemTags.getCollection().get(ResourceLocations.POTION_OF_BEES_INGREDIENTS).contains(ingredient.getItem());
 	}
 
 	@Override

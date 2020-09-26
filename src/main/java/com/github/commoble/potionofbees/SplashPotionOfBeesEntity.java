@@ -10,6 +10,7 @@ import net.minecraft.potion.Potions;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.FMLPlayMessages.SpawnEntity;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -66,10 +67,10 @@ public class SplashPotionOfBeesEntity extends ProjectileItemEntity
 	@Override
 	protected void onImpact(RayTraceResult result)
 	{
-		if (!this.world.isRemote)
+		if (this.world instanceof ServerWorld)
 		{
 			this.world.playEvent(2002, new BlockPos(this.lastTickPosX, this.lastTickPosY, this.lastTickPosZ), PotionUtils.getPotionColor(Potions.FIRE_RESISTANCE));
-			WorldUtil.spawnAngryBees(this.world, result.getHitVec());
+			WorldUtil.spawnAngryBees((ServerWorld)this.world, result.getHitVec());
 		}
 
 		this.remove();

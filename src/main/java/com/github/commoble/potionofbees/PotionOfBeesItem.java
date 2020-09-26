@@ -13,6 +13,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class PotionOfBeesItem extends Item
 {
@@ -56,7 +57,7 @@ public class PotionOfBeesItem extends Item
 	 * called when the player stops using the Item before the action is complete.
 	 */
 	@Override
-	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving)
+	public ItemStack onItemUseFinish(ItemStack stack, World world, LivingEntity entityLiving)
 	{
 		PlayerEntity playerentity = entityLiving instanceof PlayerEntity ? (PlayerEntity) entityLiving : null;
 		if (playerentity instanceof ServerPlayerEntity)
@@ -64,10 +65,10 @@ public class PotionOfBeesItem extends Item
 			CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayerEntity) playerentity, stack);
 		}
 
-		if (!worldIn.isRemote)
+		if (world instanceof ServerWorld)
 		{
 			entityLiving.attackEntityFrom(DamageSource.CRAMMING, 4F);
-			WorldUtil.spawnAngryBees(worldIn, entityLiving.getPositionVec());
+			WorldUtil.spawnAngryBees((ServerWorld)world, entityLiving.getPositionVec());
 		}
 
 		if (playerentity != null)
