@@ -5,6 +5,8 @@ import java.util.function.Consumer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Effect;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ItemTags;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -16,6 +18,7 @@ public class PotionOfBeesMod
 {
 	public static final String MODID = "potionofbees";
 	public static final double BEE_SEARCH_RADIUS = 10D;
+	public static final ITag<Item> POTION_INGREDIENT_TAG = ItemTags.makeWrapperTag("potionofbees:potion_of_bees_ingredients"); 
 
 	public static <T extends IForgeRegistryEntry<T>> Consumer<Register<T>> getRegistrator(Consumer<Registrator<T>> consumer)
 	{
