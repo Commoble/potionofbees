@@ -2,50 +2,57 @@ package commoble.potionofbees;
 
 import java.util.Optional;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.passive.BeeEntity;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.server.ServerWorld;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class WorldUtil
 {
-	public static void spawnAngryBees(ServerWorld world, Vector3d vec)
+	public static void spawnAngryBees(ServerLevel world, Vec3 vec)
 	{
-		AxisAlignedBB targetBox = new AxisAlignedBB(vec,vec).grow(PotionOfBeesMod.BEE_SEARCH_RADIUS);
+		AABB targetBox = new AABB(vec,vec).inflate(PotionOfBeesMod.BEE_SEARCH_RADIUS);
 
-		Optional<LivingEntity> foundTarget =
-			world.getEntitiesWithinAABB(LivingEntity.class, targetBox, WorldUtil::isValidBeeTarget).stream()
-			.reduce((entityA, entityB) -> entityB.getDistanceSq(vec) < entityA.getDistanceSq(vec) ? entityB : entityA);
+		@Nullable LivingEntity target =
+			world.getEntitiesOfClass(LivingEntity.class, targetBox, WorldUtil::isValidBeeTarget).stream()
+				.reduce((entityA, entityB) -> entityB.distanceToSqr(vec) < entityA.distanceToSqr(vec) ? entityB : entityA)
+				.orElse(null);
 		
 		
-		int bees = 3 + world.rand.nextInt(5) + world.rand.nextInt(5);
+		int bees = 3 + world.random.nextInt(5) + world.random.nextInt(5);
 		
 		int maxTime = 3000;
 		int ticksToExist = maxTime/bees;
 
 		for (int i=0; i<bees; i++)
 		{
-			BlockPos spawnPos = new BlockPos(vec.x, vec.y, vec.z);
-			Entity ent = EntityType.BEE.spawn(world, null, null, spawnPos, SpawnReason.EVENT, false, false);
-			if (ent instanceof BeeEntity)
+			spawnAngryBee(world, vec, target, ticksToExist);
+		}
+	}
+	
+	public static void spawnAngryBee(ServerLevel world, Vec3 vec, @Nullable LivingEntity target, int ticksToExist)
+	{
+		BlockPos spawnPos = new BlockPos(vec.x, vec.y, vec.z);
+		Entity ent = EntityType.BEE.spawn(world, null, null, spawnPos, MobSpawnType.EVENT, false, false);
+		if (ent instanceof Bee bee)
+		{
+			bee.setPos(vec.x, vec.y, vec.z);
+			bee.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticksToExist, 1, false, false));
+			bee.addEffect(new MobEffectInstance(PotionOfBeesMod.get().evanescenceEffect.get(), ticksToExist, 0, false, false));
+			if (target != null)
 			{
-				BeeEntity bee = (BeeEntity)ent;
-				bee.setPosition(vec.x, vec.y, vec.z);
-				bee.addPotionEffect(new EffectInstance(Effects.SPEED, maxTime, 1, false, false));
-				bee.addPotionEffect(new EffectInstance(RegistryObjects.EVANESCENCE_EFFECT, ticksToExist, 0, false, false));
-				foundTarget.ifPresent(target -> { // make bee angry at target
-						bee.setAttackTarget(target);
-						bee.targetSelector.addGoal(0, new AttackThingsThatAreNotBeesGoal(bee));
-					});
+				bee.setTarget(target);
+				bee.targetSelector.addGoal(0, new AttackThingsThatAreNotBeesGoal(bee));
 			}
-			
 		}
 	}
 	

@@ -1,25 +1,23 @@
 package commoble.potionofbees.client.jei;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-import com.google.common.collect.Lists;
 
 import commoble.potionofbees.PotionOfBeesMod;
-import commoble.potionofbees.RegistryObjects;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.vanilla.IJeiBrewingRecipe;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @JeiPlugin
 public class JeiProxy implements IModPlugin
@@ -36,18 +34,30 @@ public class JeiProxy implements IModPlugin
 	public void registerRecipes(IRecipeRegistration registration)
 	{
 		IVanillaRecipeFactory factory = registration.getVanillaRecipeFactory();
-		registration.addRecipes(Lists.newArrayList(
-			makeJeiBrewingRecipe(factory, Items.POTION, PotionOfBeesMod.POTION_INGREDIENT_TAG, new ItemStack(RegistryObjects.POTION_OF_BEES_ITEM)),
-			makeJeiBrewingRecipe(factory, Items.SPLASH_POTION, PotionOfBeesMod.POTION_INGREDIENT_TAG, new ItemStack(RegistryObjects.SPLASH_POTION_OF_BEES_ITEM))),
-			VanillaRecipeCategoryUid.BREWING);
+		registration.addRecipes(RecipeTypes.BREWING, List.of(
+			tagCatalyzedBrewingRecipe(factory,
+				PotionOfBeesMod.POTION_INGREDIENT_TAG,
+				PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
+				new ItemStack(PotionOfBeesMod.get().potionOfBeesItem.get())),
+			tagCatalyzedBrewingRecipe(factory,
+				Tags.Items.GUNPOWDER,
+				new ItemStack(PotionOfBeesMod.get().potionOfBeesItem.get()),
+				new ItemStack(PotionOfBeesMod.get().splashPotionOfBeesItem.get())),
+			tagCatalyzedBrewingRecipe(factory,
+				PotionOfBeesMod.DRAGON_BREATH_TAG,
+				new ItemStack(PotionOfBeesMod.get().potionOfBeesItem.get()),
+				new ItemStack(PotionOfBeesMod.get().lingeringPotionOfBeesItem.get()))));
 	}
-
-	public static IJeiBrewingRecipe makeJeiBrewingRecipe(IVanillaRecipeFactory factory, Item inputPotionItem, ITag<Item> catalystTag, ItemStack output)
+	
+	private static IJeiBrewingRecipe tagCatalyzedBrewingRecipe(IVanillaRecipeFactory factory, TagKey<Item> catalystTag, ItemStack inputPotion, ItemStack outputPotion)
 	{
-		List<ItemStack> ingredients = catalystTag.getAllElements()
-			.stream()
-			.map(ItemStack::new)
-			.collect(Collectors.toList());
-		return factory.createBrewingRecipe(ingredients, PotionUtils.addPotionToItemStack(new ItemStack(inputPotionItem), Potions.AWKWARD), output);
+		return factory.createBrewingRecipe(
+			ForgeRegistries.ITEMS.tags()
+				.getTag(catalystTag)
+				.stream()
+				.map(ItemStack::new)
+				.toList(),
+			inputPotion,
+			outputPotion);
 	}
 }

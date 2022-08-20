@@ -1,25 +1,25 @@
 package commoble.potionofbees;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 
-public class EvanescenceEffect extends Effect
+public class EvanescenceEffect extends MobEffect
 {
-	public EvanescenceEffect(EffectType typeIn, int liquidColorIn)
+	public EvanescenceEffect(MobEffectCategory typeIn, int liquidColorIn)
 	{
 		super(typeIn, liquidColorIn);
 	}
 
 	@Override
-	public boolean isReady(int duration, int amplifier)
+	public boolean isDurationEffectTick(int duration, int amplifier)
 	{
 		return duration <= 1;
 	}
 
 	@Override
-	public void performEffect(LivingEntity entityLivingBaseIn, int amplifier)
+	public void applyEffectTick(LivingEntity entityLivingBaseIn, int amplifier)
 	{
-		entityLivingBaseIn.onKillCommand();
+		entityLivingBaseIn.kill();
 	}
 }

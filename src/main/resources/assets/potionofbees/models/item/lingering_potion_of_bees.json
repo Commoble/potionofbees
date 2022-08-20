@@ -2,6 +2,6 @@
     "parent": "item/generated",
     "textures": {
         "layer0": "potionofbees:item/potion_of_bees",
-        "layer1": "minecraft:item/splash_potion"
+        "layer1": "minecraft:item/lingering_potion"
     }
 }

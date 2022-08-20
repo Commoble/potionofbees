@@ -1,84 +1,88 @@
 package commoble.potionofbees;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ProjectileItemEntity;
-import net.minecraft.item.Item;
-import net.minecraft.network.IPacket;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.network.FMLPlayMessages.SpawnEntity;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Position;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages.SpawnEntity;
 
-public class SplashPotionOfBeesEntity extends ProjectileItemEntity
+public class SplashPotionOfBeesEntity extends ThrowableItemProjectile
 {
-	public SplashPotionOfBeesEntity(EntityType<? extends SplashPotionOfBeesEntity> entityType, World world)
+	public SplashPotionOfBeesEntity(EntityType<? extends SplashPotionOfBeesEntity> entityType, Level world)
 	{
 		super(entityType, world);
 	}
 	
-	private SplashPotionOfBeesEntity(World worldIn, LivingEntity throwerIn)
+	private SplashPotionOfBeesEntity(Level worldIn, LivingEntity throwerIn)
 	{
-		super(RegistryObjects.getSplashPotionOfBeesEntityType(), throwerIn, worldIn);
+		super(PotionOfBeesMod.get().splashPotionOfBeesEntityType.get(), throwerIn, worldIn);
 	}
 	
-	public static SplashPotionOfBeesEntity asThrownEntity(World worldIn, LivingEntity throwerIn)
+	public static SplashPotionOfBeesEntity throwFromThrower(Level worldIn, LivingEntity throwerIn)
 	{
 		return new SplashPotionOfBeesEntity(worldIn, throwerIn);
 	}
 	
-	private SplashPotionOfBeesEntity(World worldIn, double x, double y, double z)
+	private SplashPotionOfBeesEntity(Level worldIn, double x, double y, double z)
 	{
-		super(RegistryObjects.getSplashPotionOfBeesEntityType(), x, y, z, worldIn);
+		super(PotionOfBeesMod.get().splashPotionOfBeesEntityType.get(), x, y, z, worldIn);
 	}
 	
-	public static SplashPotionOfBeesEntity asDispensedEntity(World worldIn, double x, double y, double z)
+	public static SplashPotionOfBeesEntity dispenseFromDispenser(Level worldIn, Position position, ItemStack stack)
 	{
-		return new SplashPotionOfBeesEntity(worldIn, x, y, z);
+		SplashPotionOfBeesEntity entity = new SplashPotionOfBeesEntity(worldIn, position.x(), position.y(), position.z());
+		entity.setItem(stack);
+		return entity;
 	}
 	
-	public static SplashPotionOfBeesEntity spawnOnClient(SpawnEntity spawnPacket, World world)
+	public static SplashPotionOfBeesEntity spawnOnClient(SpawnEntity spawnPacket, Level world)
 	{
-		return new SplashPotionOfBeesEntity(RegistryObjects.getSplashPotionOfBeesEntityType(), world);
+		return new SplashPotionOfBeesEntity(PotionOfBeesMod.get().splashPotionOfBeesEntityType.get(), world);
 	}
 
 	@Override
 	protected Item getDefaultItem()
 	{
-		return RegistryObjects.SPLASH_POTION_OF_BEES_ITEM;
+		return PotionOfBeesMod.get().splashPotionOfBeesItem.get();
 	}
 
 	/**
 	 * Gets the amount of gravity to apply to the thrown entity with each tick.
 	 */
 	@Override
-	protected float getGravityVelocity()
+	protected float getGravity()
 	{
-		return 0.07F;
+		return 0.05F; // same as potions
 	}
 
 	/**
-	 * Called when this EntityThrowable hits a block or entity.
+	 * Called when this hits a block or entity.
 	 */
 	@Override
-	protected void onImpact(RayTraceResult result)
+	protected void onHit(HitResult result)
 	{
-		if (this.world instanceof ServerWorld)
+		if (this.level instanceof ServerLevel serverLevel)
 		{
-			this.world.playEvent(2002, new BlockPos(this.lastTickPosX, this.lastTickPosY, this.lastTickPosZ), PotionUtils.getPotionColor(Potions.FIRE_RESISTANCE));
-			WorldUtil.spawnAngryBees((ServerWorld)this.world, result.getHitVec());
+			this.level.levelEvent(2002, new BlockPos(this.xOld, this.yOld, this.zOld), PotionUtils.getColor(Potions.FIRE_RESISTANCE));
+			WorldUtil.spawnAngryBees(serverLevel, result.getLocation());
 		}
 
-		this.remove();
+		this.discard();
 
 	}
 	
 	@Override
-	public IPacket<?> createSpawnPacket()
+	public Packet<?> getAddEntityPacket()
 	{
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}

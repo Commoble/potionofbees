@@ -1,9 +1,9 @@
 package commoble.potionofbees;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.passive.BeeEntity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.Bee;
 
 public class AttackThingsThatAreNotBeesGoal extends NearestAttackableTargetGoal<LivingEntity>
 {
@@ -12,54 +12,54 @@ public class AttackThingsThatAreNotBeesGoal extends NearestAttackableTargetGoal<
 		return (ent.getType() != EntityType.BEE);
 	}
 	
-	AttackThingsThatAreNotBeesGoal(BeeEntity p_i225719_1_)
+	AttackThingsThatAreNotBeesGoal(Bee bee)
 	{
-		super(p_i225719_1_, LivingEntity.class, 10, true, false, AttackThingsThatAreNotBeesGoal::isThingNotBee);
+		super(bee, LivingEntity.class, 10, true, false, AttackThingsThatAreNotBeesGoal::isThingNotBee);
 	}
 
 	/**
 	 * Returns whether the EntityAIBase should begin execution.
 	 */
 	@Override
-	public boolean shouldExecute()
+	public boolean canUse()
 	{
-		return this.canSting() && super.shouldExecute();
+		return this.canSting() && super.canUse();
 	}
 
 	@Override
-	protected void findNearestTarget()
+	protected void findTarget()
 	{
-		this.nearestTarget = this.goalOwner.world.func_225318_b(
-			this.targetClass,
-			this.targetEntitySelector,
-			this.goalOwner,
-			this.goalOwner.getPosX(),
-			this.goalOwner.getPosY(),
-			this.goalOwner.getPosZ(),
-			this.getTargetableArea(this.getTargetDistance()));
+		this.target = this.mob.level.getNearestEntity(
+			this.targetType,
+			this.targetConditions,
+			this.mob,
+			this.mob.getX(),
+			this.mob.getY(),
+			this.mob.getZ(),
+			this.getTargetSearchArea(this.getFollowDistance()));
 	}
 
 	/**
 	 * Returns whether an in-progress EntityAIBase should continue executing
 	 */
 	@Override
-	public boolean shouldContinueExecuting()
+	public boolean canContinueToUse()
 	{
 		boolean canSting = this.canSting();
-		if (canSting && this.goalOwner.getAttackTarget() != null)
+		if (canSting && this.mob.getTarget() != null)
 		{
-			return super.shouldContinueExecuting();
+			return super.canContinueToUse();
 		}
 		else
 		{
-			this.target = null;
+			this.targetMob = null;
 			return false;
 		}
 	}
 
 	private boolean canSting()
 	{
-		BeeEntity beeentity = (BeeEntity) this.goalOwner;
+		Bee beeentity = (Bee) this.mob;
 		return beeentity.isAggressive() && !beeentity.hasStung();
 	}
 }

@@ -1,19 +1,19 @@
 package commoble.potionofbees;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.UseAction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
 
 public class PotionOfBeesItem extends Item
 {
@@ -36,9 +36,9 @@ public class PotionOfBeesItem extends Item
 	 * being used
 	 */
 	@Override
-	public UseAction getUseAction(ItemStack stack)
+	public UseAnim getUseAnimation(ItemStack stack)
 	{
-		return UseAction.DRINK;
+		return UseAnim.DRINK;
 	}
 
 	/**
@@ -46,10 +46,10 @@ public class PotionOfBeesItem extends Item
 	 * this item is used on a Block, see {@link #onItemUse}.
 	 */
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
+	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn)
 	{
-		playerIn.setActiveHand(handIn);
-		return ActionResult.resultSuccess(playerIn.getHeldItem(handIn));
+		playerIn.startUsingItem(handIn);
+		return InteractionResultHolder.success(playerIn.getItemInHand(handIn));
 	}
 
 	/**
@@ -57,39 +57,39 @@ public class PotionOfBeesItem extends Item
 	 * called when the player stops using the Item before the action is complete.
 	 */
 	@Override
-	public ItemStack onItemUseFinish(ItemStack stack, World world, LivingEntity entityLiving)
+	public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity)
 	{
-		PlayerEntity playerentity = entityLiving instanceof PlayerEntity ? (PlayerEntity) entityLiving : null;
-		if (playerentity instanceof ServerPlayerEntity)
+		Player player = entity instanceof Player playerEntity ? playerEntity : null;
+		if (player instanceof ServerPlayer serverPlayer)
 		{
-			CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayerEntity) playerentity, stack);
+			CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, stack);
 		}
 
-		if (world instanceof ServerWorld)
+		if (level instanceof ServerLevel serverLevel)
 		{
-			entityLiving.attackEntityFrom(DamageSource.CRAMMING, 4F);
-			WorldUtil.spawnAngryBees((ServerWorld)world, entityLiving.getPositionVec());
+			entity.hurt(DamageSource.CRAMMING, 4F);
+			WorldUtil.spawnAngryBees(serverLevel, entity.position());
 		}
 
-		if (playerentity != null)
+		if (player != null)
 		{
-			playerentity.addStat(Stats.ITEM_USED.get(this));
-			if (!playerentity.abilities.isCreativeMode)
+			player.awardStat(Stats.ITEM_USED.get(this));
+			if (!player.getAbilities().instabuild)
 			{
 				stack.shrink(1);
 			}
 		}
 
-		if (playerentity == null || !playerentity.abilities.isCreativeMode)
+		if (player == null || !player.getAbilities().instabuild)
 		{
 			if (stack.isEmpty())
 			{
 				return new ItemStack(Items.GLASS_BOTTLE);
 			}
 
-			if (playerentity != null)
+			if (player != null)
 			{
-				playerentity.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
+				player.getInventory().add(new ItemStack(Items.GLASS_BOTTLE));
 			}
 		}
 
