@@ -6,7 +6,7 @@
 # The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
 modLoader="javafml" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion="[43,)" #mandatory (current forge version)
+loaderVersion="[47,)" #mandatory (current forge version)
 # A URL to refer people to when problems occur with this mod
 issueTrackerURL="https://github.com/Commoble/potionofbees/issues" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
@@ -33,6 +33,7 @@ description='''
 Brewing Recipes:
 Awkward Potion + Honeycomb Block = Potion of Bees
 Potion of Bees + Gunpowder = Splash Potion of Bees
+Potion of Bees + Dragon's Breath = Lingering Potion of Bees
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.potionofbees]] #optional
@@ -41,7 +42,7 @@ Potion of Bees + Gunpowder = Splash Potion of Bees
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[43.0.0,)" #mandatory
+    versionRange="[47.0.3,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
@@ -50,6 +51,6 @@ Potion of Bees + Gunpowder = Splash Potion of Bees
 [[dependencies.potionofbees]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.2,1.20)"
+    versionRange="[1.20.1, 1.21)"
     ordering="NONE"
     side="BOTH"

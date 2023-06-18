@@ -1,7 +1,5 @@
 package commoble.potionofbees;
 
-import java.util.Optional;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -41,8 +39,8 @@ public class WorldUtil
 	
 	public static void spawnAngryBee(ServerLevel world, Vec3 vec, @Nullable LivingEntity target, int ticksToExist)
 	{
-		BlockPos spawnPos = new BlockPos(vec.x, vec.y, vec.z);
-		Entity ent = EntityType.BEE.spawn(world, null, null, spawnPos, MobSpawnType.EVENT, false, false);
+		BlockPos spawnPos = new BlockPos((int)vec.x, (int)vec.y, (int)vec.z);
+		Entity ent = EntityType.BEE.spawn(world, spawnPos, MobSpawnType.EVENT);
 		if (ent instanceof Bee bee)
 		{
 			bee.setPos(vec.x, vec.y, vec.z);

@@ -47,7 +47,7 @@ public class LingeringPotionOfBeesCloud extends AreaEffectCloud
 	{
 		super.tick();
 		
-		if (!this.isWaiting() && !this.isRemoved() && this.level instanceof ServerLevel serverLevel)
+		if (!this.isWaiting() && !this.isRemoved() && this.level() instanceof ServerLevel serverLevel)
 		{
 			Vec3 vec = this.position();
 			AABB targetBox = new AABB(vec,vec).inflate(PotionOfBeesMod.BEE_SEARCH_RADIUS);

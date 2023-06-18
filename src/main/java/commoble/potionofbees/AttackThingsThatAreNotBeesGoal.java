@@ -29,7 +29,7 @@ public class AttackThingsThatAreNotBeesGoal extends NearestAttackableTargetGoal<
 	@Override
 	protected void findTarget()
 	{
-		this.target = this.mob.level.getNearestEntity(
+		this.target = this.mob.level().getNearestEntity(
 			this.targetType,
 			this.targetConditions,
 			this.mob,

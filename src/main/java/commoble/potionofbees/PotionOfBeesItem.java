@@ -6,7 +6,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -67,7 +66,7 @@ public class PotionOfBeesItem extends Item
 
 		if (level instanceof ServerLevel serverLevel)
 		{
-			entity.hurt(DamageSource.CRAMMING, 4F);
+			entity.hurt(serverLevel.damageSources().cramming(), 4F);
 			WorldUtil.spawnAngryBees(serverLevel, entity.position());
 		}
 

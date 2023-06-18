@@ -2,7 +2,6 @@ package commoble.potionofbees;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Position;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,7 +12,6 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages.SpawnEntity;
 
 public class SplashPotionOfBeesEntity extends ThrowableItemProjectile
@@ -71,19 +69,13 @@ public class SplashPotionOfBeesEntity extends ThrowableItemProjectile
 	@Override
 	protected void onHit(HitResult result)
 	{
-		if (this.level instanceof ServerLevel serverLevel)
+		if (this.level() instanceof ServerLevel serverLevel)
 		{
-			this.level.levelEvent(2002, new BlockPos(this.xOld, this.yOld, this.zOld), PotionUtils.getColor(Potions.FIRE_RESISTANCE));
+			serverLevel.levelEvent(2002, new BlockPos((int)this.xOld, (int)this.yOld, (int)this.zOld), PotionUtils.getColor(Potions.FIRE_RESISTANCE));
 			WorldUtil.spawnAngryBees(serverLevel, result.getLocation());
 		}
 
 		this.discard();
 
-	}
-	
-	@Override
-	public Packet<?> getAddEntityPacket()
-	{
-		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

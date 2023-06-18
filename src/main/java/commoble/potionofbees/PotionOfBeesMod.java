@@ -1,7 +1,7 @@
 package commoble.potionofbees;
 
 import commoble.potionofbees.client.ClientProxy;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
@@ -9,7 +9,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -32,8 +33,8 @@ public class PotionOfBeesMod
 {
 	public static final String MODID = "potionofbees";
 	public static final double BEE_SEARCH_RADIUS = 10D;
-	public static final TagKey<Item> POTION_INGREDIENT_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(MODID, Names.POTION_OF_BEES_INGREDIENTS));
-	public static final TagKey<Item> DRAGON_BREATH_TAG = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("forge:dragon_breath"));
+	public static final TagKey<Item> POTION_INGREDIENT_TAG = TagKey.create(Registries.ITEM, new ResourceLocation(MODID, Names.POTION_OF_BEES_INGREDIENTS));
+	public static final TagKey<Item> DRAGON_BREATH_TAG = TagKey.create(Registries.ITEM, new ResourceLocation("forge:dragon_breath"));
 	
 	private static PotionOfBeesMod instance;
 	public static PotionOfBeesMod get() { return instance; }
@@ -69,18 +70,19 @@ public class PotionOfBeesMod
 			.updateInterval(Integer.MAX_VALUE)
 			.build(Names.LINGERING_POTION_OF_BEES_CLOUD));
 
-		this.potionOfBeesItem = items.register(Names.POTION_OF_BEES, () -> new PotionOfBeesItem(new Item.Properties().tab(CreativeModeTab.TAB_BREWING)));
+		this.potionOfBeesItem = items.register(Names.POTION_OF_BEES, () -> new PotionOfBeesItem(new Item.Properties()));
 		this.splashPotionOfBeesItem = items.register(Names.SPLASH_POTION_OF_BEES, () -> new ThrowableItem(
-			new Item.Properties().tab(CreativeModeTab.TAB_BREWING),
+			new Item.Properties(),
 			() -> SoundEvents.SPLASH_POTION_THROW,
 			SplashPotionOfBeesEntity::throwFromThrower));
 		this.lingeringPotionOfBeesItem = items.register(Names.LINGERING_POTION_OF_BEES, () -> new ThrowableItem(
-			new Item.Properties().tab(CreativeModeTab.TAB_BREWING),
+			new Item.Properties(),
 			() -> SoundEvents.LINGERING_POTION_THROW,
 			LingeringPotionOfBeesEntity::throwFromThrower));
 
 		this.evanescenceEffect = mobEffects.register(Names.EVANESCENCE, () -> new EvanescenceEffect(MobEffectCategory.HARMFUL, 0));
 		
+		modBus.addListener(this::onBuildCreativeTabs);
 		modBus.addListener(this::onCommonSetup);
 		
 		ClientProxy.subscribeClientEvents(modBus, forgeBus);
@@ -91,6 +93,16 @@ public class PotionOfBeesMod
 		DeferredRegister<T> register = DeferredRegister.create(registry, MODID);
 		register.register(modBus);
 		return register;
+	}
+	
+	private void onBuildCreativeTabs(BuildCreativeModeTabContentsEvent event)
+	{
+		if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS)
+		{
+			event.accept(this.potionOfBeesItem.get());
+			event.accept(this.splashPotionOfBeesItem.get());
+			event.accept(this.lingeringPotionOfBeesItem.get());
+		}
 	}
 	
 	private void onCommonSetup(FMLCommonSetupEvent event)
