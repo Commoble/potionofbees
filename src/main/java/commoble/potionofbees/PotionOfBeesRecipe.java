@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.brewing.IBrewingRecipe;
+import net.neoforged.neoforge.common.brewing.IBrewingRecipe;
 
 public class PotionOfBeesRecipe implements IBrewingRecipe
 {

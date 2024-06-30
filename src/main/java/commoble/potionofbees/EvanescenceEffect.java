@@ -12,14 +12,15 @@ public class EvanescenceEffect extends MobEffect
 	}
 
 	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier)
+	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier)
 	{
 		return duration <= 1;
 	}
 
 	@Override
-	public void applyEffectTick(LivingEntity entityLivingBaseIn, int amplifier)
+	public boolean applyEffectTick(LivingEntity entityLivingBaseIn, int amplifier)
 	{
 		entityLivingBaseIn.kill();
+		return false;
 	}
 }

@@ -3,8 +3,8 @@ package commoble.potionofbees;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
-import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -16,9 +16,10 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ProjectileItem;
 import net.minecraft.world.level.Level;
 
-public class ThrowableItem extends Item
+public class ThrowableItem extends Item implements ProjectileItem
 {
 	protected final Supplier<SoundEvent> soundEvent;
 	protected final BiFunction<Level, LivingEntity, ThrowableItemProjectile> projectileFactory;
@@ -53,33 +54,10 @@ public class ThrowableItem extends Item
 		return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
 	}
 
-	public static class DispenseBehavior extends AbstractProjectileDispenseBehavior
+	@Override
+	public Projectile asProjectile(Level level, Position position, ItemStack stack, Direction direction)
 	{
-		private final ProjectileFactory factory;
-		
-		public DispenseBehavior(ProjectileFactory factory)
-		{
-			this.factory = factory;
-		}
-
-		@Override
-		protected Projectile getProjectile(Level level, Position position, ItemStack stack)
-		{
-			return this.factory.apply(level, position, stack);
-		}
-
-		@Override
-		protected float getUncertainty()
-		{
-			return super.getUncertainty() * 0.5F;
-		}
-
-		@Override
-		protected float getPower()
-		{
-			return super.getPower() * 1.25F;
-		}
-		
+		return this.projectileFactory.apply(level, null);
 	}
 	
 	public static interface ProjectileFactory

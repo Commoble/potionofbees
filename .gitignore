@@ -20,9 +20,4 @@ build
 # other
 eclipse
 run
-
-# Files from Forge MDK
-forge*changelog.txt
-forge-CREDITS.txt
-forge-LICENSE.txt
-forge-README.txt
+runs

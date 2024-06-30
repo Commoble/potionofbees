@@ -1,5 +1,6 @@
 package commoble.potionofbees.client.jei;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import commoble.potionofbees.PotionOfBeesMod;
@@ -9,20 +10,20 @@ import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.vanilla.IJeiBrewingRecipe;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.Tags;
 
 @JeiPlugin
 public class JeiProxy implements IModPlugin
 {
-	public static final ResourceLocation ID = new ResourceLocation(PotionOfBeesMod.MODID, PotionOfBeesMod.MODID);
+	public static final ResourceLocation ID = PotionOfBeesMod.id(PotionOfBeesMod.MODID);
 	
 	@Override
 	public ResourceLocation getPluginUid()
@@ -37,10 +38,10 @@ public class JeiProxy implements IModPlugin
 		registration.addRecipes(RecipeTypes.BREWING, List.of(
 			tagCatalyzedBrewingRecipe(factory,
 				PotionOfBeesMod.POTION_INGREDIENT_TAG,
-				PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
+				PotionContents.createItemStack(Items.POTION, Potions.AWKWARD),
 				new ItemStack(PotionOfBeesMod.get().potionOfBeesItem.get())),
 			tagCatalyzedBrewingRecipe(factory,
-				Tags.Items.GUNPOWDER,
+				Tags.Items.GUNPOWDERS,
 				new ItemStack(PotionOfBeesMod.get().potionOfBeesItem.get()),
 				new ItemStack(PotionOfBeesMod.get().splashPotionOfBeesItem.get())),
 			tagCatalyzedBrewingRecipe(factory,
@@ -51,12 +52,13 @@ public class JeiProxy implements IModPlugin
 	
 	private static IJeiBrewingRecipe tagCatalyzedBrewingRecipe(IVanillaRecipeFactory factory, TagKey<Item> catalystTag, ItemStack inputPotion, ItemStack outputPotion)
 	{
+		List<ItemStack> catalysts = new ArrayList<>();
+		for (var item : BuiltInRegistries.ITEM.getTagOrEmpty(catalystTag))
+		{
+			catalysts.add(new ItemStack(item));
+		}
 		return factory.createBrewingRecipe(
-			ForgeRegistries.ITEMS.tags()
-				.getTag(catalystTag)
-				.stream()
-				.map(ItemStack::new)
-				.toList(),
+			catalysts,
 			inputPotion,
 			outputPotion);
 	}

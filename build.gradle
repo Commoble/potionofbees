@@ -1,73 +1,45 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-    }
+plugins {
+	id 'java-library'
+	id 'eclipse'
+	id 'idea'
+	id 'net.neoforged.gradle.userdev' version "7.0.+"
 }
-apply plugin: 'net.minecraftforge.gradle'
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
 
+group = "net.commoble.${modid}"
+base { archivesName="${modid}-${mc_version}" }
 version = "${mod_version}"
-group = "commoble.${modid}"
-archivesBaseName = "${modid}-${mc_version}"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
-minecraft {
-    mappings channel: 'official', version: "${mc_version}"
-    // accessTransformer = file('build/resources/main/META-INF/accesstransformer.cfg')
+runs {
+	configureEach {
+		systemProperty 'forge.logging.console.level', 'debug'
+		modSource project.sourceSets.main
+	}
 
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
-    runs {
-        client {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
+	client {
+		// Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+		systemProperty 'forge.enabledGameTestNamespaces', project.modid
+	}
 
-            mods {
-                potionofbees {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-
-            mods {
-                potionofbees {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
+	server {
+		systemProperty 'forge.enabledGameTestNamespaces', project.modid
+	}
 }
 
 repositories {
-  maven {
-    // location of the maven that hosts JEI files
-    name = "Progwml6 maven"
-    url = "https://dvs1.progwml6.com/files/maven/"
-  }
-  maven {
-    // location of a maven mirror for JEI files, as a fallback
-    name = "ModMaven"
-    url = "https://modmaven.k-4u.nl"
-  }
+	maven { url = "https://maven.blamejared.com" }
+	maven { url = "https://maven.terraformersmc.com" }
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-
- 	compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
- 	compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
- 	runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
+	implementation "net.neoforged:neoforge:${neo_version}"
+	compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
+	compileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
+	// at runtime, use the full JEI jar for NeoForge
+	//runtimeOnly "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
+	
+	implementation "dev.emi:emi-neoforge:${emi_version}"
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -85,17 +57,14 @@ jar {
     }
 }
 
-jar.finalizedBy('reobfJar') 
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
-        }
+// IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
     }
 }

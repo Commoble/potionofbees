@@ -1,7 +1,11 @@
 package commoble.potionofbees;
 
 import commoble.potionofbees.client.ClientProxy;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
@@ -12,56 +16,50 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 @Mod(PotionOfBeesMod.MODID)
 public class PotionOfBeesMod
 {
 	public static final String MODID = "potionofbees";
 	public static final double BEE_SEARCH_RADIUS = 10D;
-	public static final TagKey<Item> POTION_INGREDIENT_TAG = TagKey.create(Registries.ITEM, new ResourceLocation(MODID, Names.POTION_OF_BEES_INGREDIENTS));
-	public static final TagKey<Item> DRAGON_BREATH_TAG = TagKey.create(Registries.ITEM, new ResourceLocation("forge:dragon_breath"));
+	public static final TagKey<Item> POTION_INGREDIENT_TAG = TagKey.create(Registries.ITEM, id(Names.POTION_OF_BEES_INGREDIENTS));
+	public static final TagKey<Item> DRAGON_BREATH_TAG = TagKey.create(Registries.ITEM, ResourceLocation.parse("c:dragon_breath"));
 	
 	private static PotionOfBeesMod instance;
 	public static PotionOfBeesMod get() { return instance; }
 
-	public final RegistryObject<EntityType<SplashPotionOfBeesEntity>> splashPotionOfBeesEntityType;
-	public final RegistryObject<EntityType<LingeringPotionOfBeesEntity>> lingeringPotionOfBeesEntityType;
-	public final RegistryObject<EntityType<LingeringPotionOfBeesCloud>> lingeringPotionOfBeesCloudEntityType;
-	public final RegistryObject<PotionOfBeesItem> potionOfBeesItem;
-	public final RegistryObject<ThrowableItem> splashPotionOfBeesItem;
-	public final RegistryObject<ThrowableItem> lingeringPotionOfBeesItem;
-	public final RegistryObject<EvanescenceEffect> evanescenceEffect;
+	public final DeferredHolder<EntityType<?>, EntityType<SplashPotionOfBeesEntity>> splashPotionOfBeesEntityType;
+	public final DeferredHolder<EntityType<?>, EntityType<LingeringPotionOfBeesEntity>> lingeringPotionOfBeesEntityType;
+	public final DeferredHolder<EntityType<?>, EntityType<LingeringPotionOfBeesCloud>> lingeringPotionOfBeesCloudEntityType;
+	public final DeferredHolder<Item, PotionOfBeesItem> potionOfBeesItem;
+	public final DeferredHolder<Item, ThrowableItem> splashPotionOfBeesItem;
+	public final DeferredHolder<Item, ThrowableItem> lingeringPotionOfBeesItem;
+	public final DeferredHolder<MobEffect, EvanescenceEffect> evanescenceEffect;
 
-	public PotionOfBeesMod()
+	public PotionOfBeesMod(IEventBus modBus)
 	{
 		instance = this;
-		final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-		final IEventBus forgeBus = MinecraftForge.EVENT_BUS;
+		final IEventBus forgeBus = NeoForge.EVENT_BUS;
 
-		DeferredRegister<EntityType<?>> entityTypes = makeDeferredRegister(modBus, ForgeRegistries.ENTITY_TYPES);
-		DeferredRegister<Item> items = makeDeferredRegister(modBus, ForgeRegistries.ITEMS);
-		DeferredRegister<MobEffect> mobEffects = makeDeferredRegister(modBus, ForgeRegistries.MOB_EFFECTS);
+		DeferredRegister<EntityType<?>> entityTypes = makeDeferredRegister(modBus, Registries.ENTITY_TYPE);
+		DeferredRegister<Item> items = makeDeferredRegister(modBus, Registries.ITEM);
+		DeferredRegister<MobEffect> mobEffects = makeDeferredRegister(modBus, Registries.MOB_EFFECT);
 
 		this.splashPotionOfBeesEntityType = entityTypes.register(Names.SPLASH_POTION_OF_BEES, () -> EntityType.Builder.of(SplashPotionOfBeesEntity::new, MobCategory.MISC)
-			.setCustomClientFactory(SplashPotionOfBeesEntity::spawnOnClient)
 			.build(Names.SPLASH_POTION_OF_BEES));
 		this.lingeringPotionOfBeesEntityType = entityTypes.register(Names.LINGERING_POTION_OF_BEES, () -> EntityType.Builder.of(LingeringPotionOfBeesEntity::create, MobCategory.MISC)
-			.setCustomClientFactory(LingeringPotionOfBeesEntity::spawnOnClient)
 			.build(Names.LINGERING_POTION_OF_BEES));
 		this.lingeringPotionOfBeesCloudEntityType = entityTypes.register(Names.LINGERING_POTION_OF_BEES_CLOUD, () -> EntityType.Builder.of(LingeringPotionOfBeesCloud::create, MobCategory.MISC)
 			.fireImmune()
@@ -85,10 +83,12 @@ public class PotionOfBeesMod
 		modBus.addListener(this::onBuildCreativeTabs);
 		modBus.addListener(this::onCommonSetup);
 		
+		forgeBus.addListener(this::onRegisterBrewingRecipes);
+		
 		ClientProxy.subscribeClientEvents(modBus, forgeBus);
 	}
 	
-	private static <T> DeferredRegister<T> makeDeferredRegister(IEventBus modBus, IForgeRegistry<T> registry)
+	private static <T> DeferredRegister<T> makeDeferredRegister(IEventBus modBus, ResourceKey<Registry<T>> registry)
 	{
 		DeferredRegister<T> register = DeferredRegister.create(registry, MODID);
 		register.register(modBus);
@@ -112,17 +112,38 @@ public class PotionOfBeesMod
 	
 	private void afterCommonSetup()
 	{
-		BrewingRecipeRegistry.addRecipe(new PotionOfBeesRecipe(input -> input.getItem() == Items.POTION && PotionUtils.getPotion(input) == Potions.AWKWARD,
+		DispenserBlock.registerBehavior(this.splashPotionOfBeesItem.get(), new ProjectileDispenseBehavior(this.splashPotionOfBeesItem.get()));
+		DispenserBlock.registerBehavior(this.lingeringPotionOfBeesItem.get(), new ProjectileDispenseBehavior(this.lingeringPotionOfBeesItem.get()));
+	}
+	
+	private void onRegisterBrewingRecipes(RegisterBrewingRecipesEvent event)
+	{
+		var builder = event.getBuilder();
+		builder.addRecipe(new PotionOfBeesRecipe(input -> {
+				if (input.getItem() != Items.POTION)
+				{
+					return false;
+				}
+				PotionContents contents = input.get(DataComponents.POTION_CONTENTS);
+				if (contents == null)
+				{
+					return false;
+				}
+				return contents.is(Potions.AWKWARD);
+			},
 			POTION_INGREDIENT_TAG,
 			this.potionOfBeesItem));
-		BrewingRecipeRegistry.addRecipe(new PotionOfBeesRecipe(input -> input.getItem() == this.potionOfBeesItem.get(),
-			Tags.Items.GUNPOWDER,
+		builder.addRecipe(new PotionOfBeesRecipe(input -> input.getItem() == this.potionOfBeesItem.get(),
+			Tags.Items.GUNPOWDERS,
 			this.splashPotionOfBeesItem));
-		BrewingRecipeRegistry.addRecipe(new PotionOfBeesRecipe(input -> input.getItem() == this.potionOfBeesItem.get(),
+		builder.addRecipe(new PotionOfBeesRecipe(input -> input.getItem() == this.potionOfBeesItem.get(),
 			DRAGON_BREATH_TAG,
 			this.lingeringPotionOfBeesItem));
 		
-		DispenserBlock.registerBehavior(this.splashPotionOfBeesItem.get(), new ThrowableItem.DispenseBehavior(SplashPotionOfBeesEntity::dispenseFromDispenser));
-		DispenserBlock.registerBehavior(this.lingeringPotionOfBeesItem.get(), new ThrowableItem.DispenseBehavior(LingeringPotionOfBeesEntity::dispenseFromDispenser));
+	}
+	
+	public static ResourceLocation id(String path)
+	{
+		return ResourceLocation.fromNamespaceAndPath(MODID, path);
 	}
 }

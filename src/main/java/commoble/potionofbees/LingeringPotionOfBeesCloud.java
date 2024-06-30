@@ -1,24 +1,27 @@
 package commoble.potionofbees;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class LingeringPotionOfBeesCloud extends AreaEffectCloud
 {
+	private static final PotionContents DUMMY_POTION = new PotionContents(Optional.empty(), Optional.of(16750848), List.of());
 
 	public LingeringPotionOfBeesCloud(EntityType<? extends LingeringPotionOfBeesCloud> type, Level level)
 	{
 		super(type, level);
-		this.setFixedColor(PotionUtils.getColor(Potions.FIRE_RESISTANCE));
+		this.setPotionContents(DUMMY_POTION);
 		this.setInvulnerable(true);
 		this.setRadius(3F);
 		this.setRadiusOnUse(-0.5F);

@@ -45,7 +45,7 @@ public class WorldUtil
 		{
 			bee.setPos(vec.x, vec.y, vec.z);
 			bee.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticksToExist, 1, false, false));
-			bee.addEffect(new MobEffectInstance(PotionOfBeesMod.get().evanescenceEffect.get(), ticksToExist, 0, false, false));
+			bee.addEffect(new MobEffectInstance(PotionOfBeesMod.get().evanescenceEffect, ticksToExist, 0, false, false));
 			if (target != null)
 			{
 				bee.setTarget(target);
