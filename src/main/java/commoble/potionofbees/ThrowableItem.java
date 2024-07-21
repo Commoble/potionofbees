@@ -22,13 +22,15 @@ import net.minecraft.world.level.Level;
 public class ThrowableItem extends Item implements ProjectileItem
 {
 	protected final Supplier<SoundEvent> soundEvent;
-	protected final BiFunction<Level, LivingEntity, ThrowableItemProjectile> projectileFactory;
+	protected final BiFunction<Level, LivingEntity, ThrowableItemProjectile> thrownProjectileFactory;
+	protected final BiFunction<Level, Position, ThrowableItemProjectile> dispensedProjectileFactory;
 
-	public ThrowableItem(Properties props, Supplier<SoundEvent> soundEvent, BiFunction<Level, LivingEntity, ThrowableItemProjectile> projectileFactory)
+	public ThrowableItem(Properties props, Supplier<SoundEvent> soundEvent, BiFunction<Level, LivingEntity, ThrowableItemProjectile> projectileFactory, BiFunction<Level, Position, ThrowableItemProjectile> dispensedProjectileFactory)
 	{
 		super(props);
 		this.soundEvent = soundEvent;
-		this.projectileFactory = projectileFactory;
+		this.thrownProjectileFactory = projectileFactory;
+		this.dispensedProjectileFactory = dispensedProjectileFactory;
 	}
 
 	@Override
@@ -39,7 +41,7 @@ public class ThrowableItem extends Item implements ProjectileItem
 		ItemStack itemstack = player.getItemInHand(hand);
 		if (!level.isClientSide)
 		{
-			ThrowableItemProjectile projectile = this.projectileFactory.apply(level, player);
+			ThrowableItemProjectile projectile = this.thrownProjectileFactory.apply(level, player);
 			projectile.setItem(itemstack);
 			projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), -20.0F, 0.5F, 1.0F);
 			level.addFreshEntity(projectile);
@@ -57,7 +59,7 @@ public class ThrowableItem extends Item implements ProjectileItem
 	@Override
 	public Projectile asProjectile(Level level, Position position, ItemStack stack, Direction direction)
 	{
-		return this.projectileFactory.apply(level, null);
+		return this.dispensedProjectileFactory.apply(level, position);
 	}
 	
 	public static interface ProjectileFactory

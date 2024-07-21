@@ -1,6 +1,7 @@
 package commoble.potionofbees;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Position;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,6 +37,11 @@ public class LingeringPotionOfBeesEntity extends ThrowableItemProjectile
 	public static LingeringPotionOfBeesEntity throwFromThrower(Level level, LivingEntity thrower)
 	{
 		return new LingeringPotionOfBeesEntity(PotionOfBeesMod.get().lingeringPotionOfBeesEntityType.get(), thrower, level);
+	}
+	
+	public static LingeringPotionOfBeesEntity throwFromPosition(Level level, Position pos)
+	{
+		return new LingeringPotionOfBeesEntity(PotionOfBeesMod.get().lingeringPotionOfBeesEntityType.get(), pos.x(), pos.y(), pos.z(), level);
 	}
 
 	@Override

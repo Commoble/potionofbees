@@ -72,11 +72,13 @@ public class PotionOfBeesMod
 		this.splashPotionOfBeesItem = items.register(Names.SPLASH_POTION_OF_BEES, () -> new ThrowableItem(
 			new Item.Properties(),
 			() -> SoundEvents.SPLASH_POTION_THROW,
-			SplashPotionOfBeesEntity::throwFromThrower));
+			SplashPotionOfBeesEntity::throwFromThrower,
+			SplashPotionOfBeesEntity::throwFromPosition));
 		this.lingeringPotionOfBeesItem = items.register(Names.LINGERING_POTION_OF_BEES, () -> new ThrowableItem(
 			new Item.Properties(),
 			() -> SoundEvents.LINGERING_POTION_THROW,
-			LingeringPotionOfBeesEntity::throwFromThrower));
+			LingeringPotionOfBeesEntity::throwFromThrower,
+			LingeringPotionOfBeesEntity::throwFromPosition));
 
 		this.evanescenceEffect = mobEffects.register(Names.EVANESCENCE, () -> new EvanescenceEffect(MobEffectCategory.HARMFUL, 0));
 		

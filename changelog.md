@@ -1,3 +1,6 @@
+# 1.21-4.0.0.1
+* Fixed server crash on firing splash/lingering bee potions from dispensers
+
 # 1.21-4.0.0.0
 * Updated to 1.21
 

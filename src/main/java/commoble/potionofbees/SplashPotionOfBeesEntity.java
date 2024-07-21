@@ -1,6 +1,7 @@
 package commoble.potionofbees;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Position;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,6 +27,11 @@ public class SplashPotionOfBeesEntity extends ThrowableItemProjectile
 	public static SplashPotionOfBeesEntity throwFromThrower(Level worldIn, LivingEntity throwerIn)
 	{
 		return new SplashPotionOfBeesEntity(worldIn, throwerIn);
+	}
+	
+	public static SplashPotionOfBeesEntity throwFromPosition(Level worldIn, Position pos)
+	{
+		return new SplashPotionOfBeesEntity(worldIn, pos.x(), pos.y(), pos.z());
 	}
 	
 	private SplashPotionOfBeesEntity(Level worldIn, double x, double y, double z)
