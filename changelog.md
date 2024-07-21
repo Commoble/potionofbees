@@ -1,5 +1,6 @@
 # 1.21-4.0.0.1
 * Fixed server crash on firing splash/lingering bee potions from dispensers
+* Minimum neoforge version is now 113-beta
 
 # 1.21-4.0.0.0
 * Updated to 1.21
