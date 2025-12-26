@@ -11,7 +11,7 @@ import mezz.jei.api.recipe.vanilla.IJeiBrewingRecipe;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,10 +23,10 @@ import net.neoforged.neoforge.common.Tags;
 @JeiPlugin
 public class JeiProxy implements IModPlugin
 {
-	public static final ResourceLocation ID = PotionOfBeesMod.id(PotionOfBeesMod.MODID);
+	public static final Identifier ID = PotionOfBeesMod.id(PotionOfBeesMod.MODID);
 	
 	@Override
-	public ResourceLocation getPluginUid()
+	public Identifier getPluginUid()
 	{
 		return ID;
 	}
@@ -39,15 +39,15 @@ public class JeiProxy implements IModPlugin
 			tagCatalyzedBrewingRecipe(factory,
 				PotionOfBeesMod.POTION_INGREDIENT_TAG,
 				PotionContents.createItemStack(Items.POTION, Potions.AWKWARD),
-				new ItemStack(PotionOfBeesMod.get().potionOfBeesItem.get())),
+				new ItemStack(PotionOfBeesMod.POTION_OF_BEES_ITEM.get())),
 			tagCatalyzedBrewingRecipe(factory,
 				Tags.Items.GUNPOWDERS,
-				new ItemStack(PotionOfBeesMod.get().potionOfBeesItem.get()),
-				new ItemStack(PotionOfBeesMod.get().splashPotionOfBeesItem.get())),
+				new ItemStack(PotionOfBeesMod.POTION_OF_BEES_ITEM.get()),
+				new ItemStack(PotionOfBeesMod.SPLASH_POTION_OF_BEES_ITEM.get())),
 			tagCatalyzedBrewingRecipe(factory,
 				PotionOfBeesMod.DRAGON_BREATH_TAG,
-				new ItemStack(PotionOfBeesMod.get().potionOfBeesItem.get()),
-				new ItemStack(PotionOfBeesMod.get().lingeringPotionOfBeesItem.get()))));
+				new ItemStack(PotionOfBeesMod.POTION_OF_BEES_ITEM.get()),
+				new ItemStack(PotionOfBeesMod.LINGERING_POTION_OF_BEES_ITEM.get()))));
 	}
 	
 	private static IJeiBrewingRecipe tagCatalyzedBrewingRecipe(IVanillaRecipeFactory factory, TagKey<Item> catalystTag, ItemStack inputPotion, ItemStack outputPotion)
@@ -60,6 +60,7 @@ public class JeiProxy implements IModPlugin
 		return factory.createBrewingRecipe(
 			catalysts,
 			inputPotion,
-			outputPotion);
+			outputPotion,
+			outputPotion.getItemHolder().getKey().identifier());
 	}
 }

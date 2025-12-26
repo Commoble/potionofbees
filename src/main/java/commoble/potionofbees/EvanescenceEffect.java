@@ -1,8 +1,9 @@
 package commoble.potionofbees;
 
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.LivingEntity;
 
 public class EvanescenceEffect extends MobEffect
 {
@@ -18,9 +19,9 @@ public class EvanescenceEffect extends MobEffect
 	}
 
 	@Override
-	public boolean applyEffectTick(LivingEntity entityLivingBaseIn, int amplifier)
+	public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity entity, int amplifier)
 	{
-		entityLivingBaseIn.kill();
+		entity.kill(serverLevel);
 		return false;
 	}
 }

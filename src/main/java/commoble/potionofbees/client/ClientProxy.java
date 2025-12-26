@@ -15,8 +15,8 @@ public class ClientProxy
 	
 	private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event)
 	{
-		event.registerEntityRenderer(PotionOfBeesMod.get().splashPotionOfBeesEntityType.get(), ThrownItemRenderer::new);
-		event.registerEntityRenderer(PotionOfBeesMod.get().lingeringPotionOfBeesEntityType.get(), ThrownItemRenderer::new);
-		event.registerEntityRenderer(PotionOfBeesMod.get().lingeringPotionOfBeesCloudEntityType.get(), NoopRenderer::new);
+		event.registerEntityRenderer(PotionOfBeesMod.SPLASH_POTION_OF_BEES_ENTITY.get(), ThrownItemRenderer::new);
+		event.registerEntityRenderer(PotionOfBeesMod.LINGERING_POTION_OF_BEES_ENTITY.get(), ThrownItemRenderer::new);
+		event.registerEntityRenderer(PotionOfBeesMod.LINGERING_POTION_OF_BEES_CLOUD_ENTITY.get(), NoopRenderer::new);
 	}
 }

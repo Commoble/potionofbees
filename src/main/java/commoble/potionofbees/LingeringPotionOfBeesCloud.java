@@ -16,7 +16,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class LingeringPotionOfBeesCloud extends AreaEffectCloud
 {
-	private static final PotionContents DUMMY_POTION = new PotionContents(Optional.empty(), Optional.of(16750848), List.of());
+	private static final PotionContents DUMMY_POTION = new PotionContents(Optional.empty(), Optional.of(16750848), List.of(), Optional.empty());
 
 	public LingeringPotionOfBeesCloud(EntityType<? extends LingeringPotionOfBeesCloud> type, Level level)
 	{
@@ -26,6 +26,7 @@ public class LingeringPotionOfBeesCloud extends AreaEffectCloud
 		this.setRadius(3F);
 		this.setRadiusOnUse(-0.5F);
 		this.setWaitTime(10);
+		this.setDuration(600);
 		this.setRadiusPerTick(-this.getRadius() / (float)this.getDuration());
 	}
 
@@ -42,7 +43,7 @@ public class LingeringPotionOfBeesCloud extends AreaEffectCloud
 	
 	public static LingeringPotionOfBeesCloud atPosition(Level level, double x, double y, double z)
 	{
-		return new LingeringPotionOfBeesCloud(PotionOfBeesMod.get().lingeringPotionOfBeesCloudEntityType.get(), level, x, y, z);
+		return new LingeringPotionOfBeesCloud(PotionOfBeesMod.LINGERING_POTION_OF_BEES_CLOUD_ENTITY.get(), level, x, y, z);
 	}
 
 	@Override

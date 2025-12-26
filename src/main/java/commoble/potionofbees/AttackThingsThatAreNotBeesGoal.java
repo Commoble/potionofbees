@@ -1,13 +1,14 @@
 package commoble.potionofbees;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.entity.animal.bee.Bee;
 
 public class AttackThingsThatAreNotBeesGoal extends NearestAttackableTargetGoal<LivingEntity>
 {
-	public static boolean isThingNotBee(LivingEntity ent)
+	public static boolean isThingNotBee(LivingEntity ent, ServerLevel serverLevel)
 	{
 		return (ent.getType() != EntityType.BEE);
 	}
@@ -29,14 +30,17 @@ public class AttackThingsThatAreNotBeesGoal extends NearestAttackableTargetGoal<
 	@Override
 	protected void findTarget()
 	{
-		this.target = this.mob.level().getNearestEntity(
-			this.targetType,
-			this.targetConditions,
-			this.mob,
-			this.mob.getX(),
-			this.mob.getY(),
-			this.mob.getZ(),
-			this.getTargetSearchArea(this.getFollowDistance()));
+		if (this.mob.level() instanceof ServerLevel serverLevel)
+		{
+			this.target = serverLevel.getNearestEntity(
+				this.targetType,
+				this.targetConditions,
+				this.mob,
+				this.mob.getX(),
+				this.mob.getY(),
+				this.mob.getZ(),
+				this.getTargetSearchArea(this.getFollowDistance()));
+		}
 	}
 
 	/**

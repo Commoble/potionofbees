@@ -7,10 +7,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -40,12 +40,12 @@ public class WorldUtil
 	public static void spawnAngryBee(ServerLevel world, Vec3 vec, @Nullable LivingEntity target, int ticksToExist)
 	{
 		BlockPos spawnPos = new BlockPos((int)vec.x, (int)vec.y, (int)vec.z);
-		Entity ent = EntityType.BEE.spawn(world, spawnPos, MobSpawnType.EVENT);
+		Entity ent = EntityType.BEE.spawn(world, spawnPos, EntitySpawnReason.EVENT);
 		if (ent instanceof Bee bee)
 		{
 			bee.setPos(vec.x, vec.y, vec.z);
-			bee.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticksToExist, 1, false, false));
-			bee.addEffect(new MobEffectInstance(PotionOfBeesMod.get().evanescenceEffect, ticksToExist, 0, false, false));
+			bee.addEffect(new MobEffectInstance(MobEffects.SPEED, ticksToExist, 1, false, false));
+			bee.addEffect(new MobEffectInstance(PotionOfBeesMod.EVANESCENCE_EFFECT, ticksToExist, 0, false, false));
 			if (target != null)
 			{
 				bee.setTarget(target);
