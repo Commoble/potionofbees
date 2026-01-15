@@ -1,4 +1,5 @@
 TODO add readme
 
-more info here
-https://www.curseforge.com/minecraft/mc-mods/potion-of-bees
+Potion of Bees can be downloaded at:
+* https://www.curseforge.com/minecraft/mc-mods/potion-of-bees
+* https://modrinth.com/mod/potion-of-bees
