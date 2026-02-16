@@ -56,10 +56,11 @@ public class LingeringPotionOfBeesCloud extends AreaEffectCloud
 			Vec3 vec = this.position();
 			AABB targetBox = new AABB(vec,vec).inflate(PotionOfBeesMod.BEE_SEARCH_RADIUS);
 
-			@Nullable LivingEntity target =
+			Optional<LivingEntity> optionalTarget =
 				serverLevel.getEntitiesOfClass(LivingEntity.class, targetBox, WorldUtil::isValidBeeTarget).stream()
-					.reduce((entityA, entityB) -> entityB.distanceToSqr(vec) < entityA.distanceToSqr(vec) ? entityB : entityA)
-					.orElse(null);
+					.reduce((entityA, entityB) -> entityB.distanceToSqr(vec) < entityA.distanceToSqr(vec) ? entityB : entityA);                                                                                   
+			
+			@Nullable LivingEntity target = optionalTarget.orElse(null);
 			
 			WorldUtil.spawnAngryBee(serverLevel, vec, target, 100 + this.random.nextInt(100));
 		}

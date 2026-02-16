@@ -61,6 +61,6 @@ public class JeiProxy implements IModPlugin
 			catalysts,
 			inputPotion,
 			outputPotion,
-			outputPotion.getItemHolder().getKey().identifier());
+			outputPotion.typeHolder().unwrapKey().get().identifier());
 	}
 }

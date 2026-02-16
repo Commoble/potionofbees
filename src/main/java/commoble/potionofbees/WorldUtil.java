@@ -1,6 +1,8 @@
 package commoble.potionofbees;
 
-import org.jetbrains.annotations.Nullable;
+import java.util.Optional;
+
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -20,13 +22,14 @@ public class WorldUtil
 	{
 		AABB targetBox = new AABB(vec,vec).inflate(PotionOfBeesMod.BEE_SEARCH_RADIUS);
 
-		@Nullable LivingEntity target =
+		Optional<LivingEntity> optionalTarget =
 			world.getEntitiesOfClass(LivingEntity.class, targetBox, WorldUtil::isValidBeeTarget).stream()
-				.reduce((entityA, entityB) -> entityB.distanceToSqr(vec) < entityA.distanceToSqr(vec) ? entityB : entityA)
-				.orElse(null);
+				.reduce((entityA, entityB) -> entityB.distanceToSqr(vec) < entityA.distanceToSqr(vec) ? entityB : entityA);
+		
+		@Nullable LivingEntity target = optionalTarget.orElse(null);
 		
 		
-		int bees = 3 + world.random.nextInt(5) + world.random.nextInt(5);
+		int bees = 3 + world.getRandom().nextInt(5) + world.getRandom().nextInt(5);
 		
 		int maxTime = 3000;
 		int ticksToExist = maxTime/bees;
