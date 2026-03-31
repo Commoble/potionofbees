@@ -1,3 +1,6 @@
+# 26.1.0.0
+* Update to MC 26.1 (requires neoforge 26.1.0.17-beta or higher)
+
 # 21.11.1
 * Add missing jar manifest attributes (fixes version not displaying in mods list)
 
