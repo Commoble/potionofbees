@@ -67,6 +67,9 @@ public class LingeringPotionOfBeesEntity extends ThrowableItemProjectile
 		if (this.level() instanceof ServerLevel serverLevel)
 		{
 			serverLevel.levelEvent(2002, new BlockPos((int)this.xOld, (int)this.yOld, (int)this.zOld), 16750848); // color of fire resistance
+            if (!this.isSilent()) {
+            	serverLevel.levelEvent(1053, this.blockPosition(), 0);
+            }
 			serverLevel.addFreshEntity(LingeringPotionOfBeesCloud.atPosition(serverLevel, this.getX(), this.getY(), this.getZ()));
 		}
 

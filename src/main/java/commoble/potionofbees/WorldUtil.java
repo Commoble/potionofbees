@@ -10,7 +10,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.phys.AABB;
@@ -43,7 +43,7 @@ public class WorldUtil
 	public static void spawnAngryBee(ServerLevel world, Vec3 vec, @Nullable LivingEntity target, int ticksToExist)
 	{
 		BlockPos spawnPos = new BlockPos((int)vec.x, (int)vec.y, (int)vec.z);
-		Entity ent = EntityType.BEE.spawn(world, spawnPos, EntitySpawnReason.EVENT);
+		Entity ent = EntityTypes.BEE.spawn(world, spawnPos, EntitySpawnReason.EVENT);
 		if (ent instanceof Bee bee)
 		{
 			bee.setPos(vec.x, vec.y, vec.z);
@@ -59,6 +59,6 @@ public class WorldUtil
 	
 	public static boolean isValidBeeTarget(LivingEntity ent)
 	{
-		return (ent.getType() != EntityType.BEE) && (!ent.isInvulnerable());
+		return (ent.getType() != EntityTypes.BEE) && (!ent.isInvulnerable());
 	}
 }

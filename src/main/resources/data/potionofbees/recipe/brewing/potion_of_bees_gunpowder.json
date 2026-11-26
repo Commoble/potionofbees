@@ -1,0 +1,12 @@
+{
+	"type": "brewing",
+	"input": {
+		"item": "potionofbees:potion_of_bees"
+	},
+	"reagent": {
+		"item": "#c:gunpowders"
+	},
+	"output": {
+		"id": "potionofbees:splash_potion_of_bees"
+	}
+}

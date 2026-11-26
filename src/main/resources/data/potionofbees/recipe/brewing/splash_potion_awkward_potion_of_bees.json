@@ -1,0 +1,15 @@
+{
+	"type": "brewing",
+	"input": {
+		"item": "splash_potion",
+		"potion_contents": {
+			"potions": "awkward"
+		}
+	},
+	"reagent": {
+		"item": "#potionofbees:potion_of_bees_ingredients"
+	},
+	"output": {
+		"id": "potionofbees:splash_potion_of_bees"
+	}
+}

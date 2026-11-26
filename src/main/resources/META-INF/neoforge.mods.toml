@@ -23,7 +23,8 @@ displayName="Potion of Bees" #mandatory
 # A URL for the "homepage" for this mod, displayed in the mod UI
 displayURL="https://www.curseforge.com/minecraft/mc-mods/potion-of-bees" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="logo.png" #optional
+iconFile="logo.png" #optional
+bannerFile="logo.png" #optional
 # A text field displayed in the mod UI
 credits="I hear the Minecraft Mod Development discord channel is the cat's bananas" #optional
 # A text field displayed in the mod UI
@@ -51,6 +52,6 @@ Potion of Bees + Dragon's Breath = Lingering Potion of Bees
 [[dependencies.potionofbees]]
     modId="minecraft"
     mandatory=true
-    versionRange="[26.1, 26.2)"
+    versionRange="[26.3, 26.4)"
     ordering="NONE"
     side="BOTH"

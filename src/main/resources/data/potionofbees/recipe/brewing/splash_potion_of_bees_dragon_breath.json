@@ -1,0 +1,12 @@
+{
+	"type": "brewing",
+	"input": {
+		"item": "potionofbees:splash_potion_of_bees"
+	},
+	"reagent": {
+		"item": "#c:dragon_breath"
+	},
+	"output": {
+		"id": "potionofbees:lingering_potion_of_bees"
+	}
+}

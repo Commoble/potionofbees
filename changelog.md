@@ -1,3 +1,7 @@
+# 26.3.0.0
+* Updated to MC 26.3
+* Splash and Lingering Potions of Bees can now be made by brewing honeycomb blocks with awkward splash/lingering potions (in addition to the existing recipes)
+
 # 26.1.0.0
 * Update to MC 26.1 (requires neoforge 26.1.0.17-beta or higher)
 

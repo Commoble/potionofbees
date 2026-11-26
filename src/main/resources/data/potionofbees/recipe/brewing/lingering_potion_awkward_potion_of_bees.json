@@ -1,0 +1,15 @@
+{
+	"type": "brewing",
+	"input": {
+		"item": "lingering_potion",
+		"potion_contents": {
+			"potions": "awkward"
+		}
+	},
+	"reagent": {
+		"item": "#potionofbees:potion_of_bees_ingredients"
+	},
+	"output": {
+		"id": "potionofbees:lingering_potion_of_bees"
+	}
+}

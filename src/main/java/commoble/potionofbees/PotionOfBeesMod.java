@@ -1,11 +1,11 @@
 package commoble.potionofbees;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import commoble.potionofbees.client.ClientProxy;
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -21,8 +21,6 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.consume_effects.ConsumeEffect;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -31,9 +29,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -103,14 +99,12 @@ public class PotionOfBeesMod
 		modBus.addListener(this::onBuildCreativeTabs);
 		modBus.addListener(this::onCommonSetup);
 		
-		forgeBus.addListener(this::onRegisterBrewingRecipes);
-		
 		ClientProxy.subscribeClientEvents(modBus, forgeBus);
 	}
 	
 	private static <T> DeferredRegister<T> defreg(ResourceKey<Registry<T>> registryKey)
 	{
-		IEventBus modBus = ModList.get().getModContainerById(MODID).get().getEventBus();
+		IEventBus modBus = Objects.requireNonNull(ModList.get().getModContainerById(MODID).get().getEventBus());
 		DeferredRegister<T> register = DeferredRegister.create(registryKey, MODID);
 		register.register(modBus);
 		return register;
@@ -118,7 +112,7 @@ public class PotionOfBeesMod
 	
 	private static <R extends DeferredRegister<?>> R defreg(Function<String,R> defregFactory)
 	{
-		IEventBus modBus = ModList.get().getModContainerById(MODID).get().getEventBus();
+		IEventBus modBus = Objects.requireNonNull(ModList.get().getModContainerById(MODID).get().getEventBus());
 		R register = defregFactory.apply(MODID);
 		register.register(modBus);
 		return register;
@@ -143,32 +137,6 @@ public class PotionOfBeesMod
 	{
 		DispenserBlock.registerBehavior(SPLASH_POTION_OF_BEES_ITEM.get(), new ProjectileDispenseBehavior(SPLASH_POTION_OF_BEES_ITEM.get()));
 		DispenserBlock.registerBehavior(LINGERING_POTION_OF_BEES_ITEM.get(), new ProjectileDispenseBehavior(LINGERING_POTION_OF_BEES_ITEM.get()));
-	}
-	
-	private void onRegisterBrewingRecipes(RegisterBrewingRecipesEvent event)
-	{
-		var builder = event.getBuilder();
-		builder.addRecipe(new PotionOfBeesRecipe(input -> {
-				if (input.getItem() != Items.POTION)
-				{
-					return false;
-				}
-				PotionContents contents = input.get(DataComponents.POTION_CONTENTS);
-				if (contents == null)
-				{
-					return false;
-				}
-				return contents.is(Potions.AWKWARD);
-			},
-			POTION_INGREDIENT_TAG,
-			POTION_OF_BEES_ITEM));
-		builder.addRecipe(new PotionOfBeesRecipe(input -> input.getItem() == POTION_OF_BEES_ITEM.get(),
-			Tags.Items.GUNPOWDERS,
-			SPLASH_POTION_OF_BEES_ITEM));
-		builder.addRecipe(new PotionOfBeesRecipe(input -> input.getItem() == POTION_OF_BEES_ITEM.get(),
-			DRAGON_BREATH_TAG,
-			LINGERING_POTION_OF_BEES_ITEM));
-		
 	}
 	
 	public static Identifier id(String path)

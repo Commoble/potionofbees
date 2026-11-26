@@ -22,7 +22,6 @@ public class LingeringPotionOfBeesCloud extends AreaEffectCloud
 	{
 		super(type, level);
 		this.setPotionContents(DUMMY_POTION);
-		this.setInvulnerable(true);
 		this.setRadius(3F);
 		this.setRadiusOnUse(-0.5F);
 		this.setWaitTime(10);
